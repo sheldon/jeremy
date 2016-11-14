@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<!-- saved from url=(0026)https://copy.sh/brainfuck/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Le Brainfuck</title>
+<meta name="description" content="A Brainfuck editor &amp; optimizing interpreter, written in JavaScript. It&#39;s pretty fast.">
+<style>
+body {
+	background-color: #ddd;
+	margin: 0px;
+	padding: 20px 60px 0px 20px;
+	min-width: 500px;
+}
+div, input, legend {
+	font-family: sans-serif;
+	line-height: 1.3em;
+	font-size: 0.9em;
+}
+a {
+	color: #E1B41F;
+	text-decoration: none;
+}
+:focus {
+	outline: 0px;
+}
+#nojsnotice {
+	margin: 100px 0px 0px 100px;
+}
+#left {
+	float: none;
+	width: 100%;
+	padding-left: 40px;
+}
+#right {
+	display:none;
+	float: right;
+	margin-right: -420px;
+}
+#rows, #editor, #output, #input, #memory_view {
+	font-family: 'Lucida Console', Monaco, monospace;
+	line-height: 19px;
+	font-size: 12.8px;
+}
+#memory_size {
+	width: 50px;
+	text-align: center;
+	border: 1px solid #000;
+}
+#eof_char_value, #dump_memory_char {
+	width: 25px;
+	text-align: center;
+	border: 1px solid #000;
+}
+#editor {
+	width: 100%;
+	background-color: #1E1916;
+	border: 0px none;
+	color: #fff;
+	overflow: auto;
+	white-space: pre;
+	display: block;
+	float: left;
+	margin: 0px;
+	word-wrap: normal;
+    background: none;
+    color: black;
+}
+input[disabled]
+{
+	background-color: #666;
+}
+#rows {
+	width: 40px;
+	margin-left: -44px;
+	float: left;
+	background-color: #45443C;
+	text-align: right;
+	overflow: hidden;
+	white-space: pre;
+	color: #E1B41F;
+}
+#rows, #editor {
+	height: 521px;
+	padding: 2px;
+	font: 4px/2px monospace;
+}
+#status {
+	font-size: 16px;
+	margin: 5px 30px;
+	float: left;
+	line-height: 1.5;
+}
+#status_bar {
+	margin: 25px 0px;
+	height: 15px;
+        margin-left: -40px;
+}
+#right > fieldset {
+	width: 330px;
+	margin-bottom: 30px;
+}
+#right > fieldset > div {
+	padding: 8px;
+}
+#right input {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.inactive_button, .active_button {
+	outline: 1px solid #888;
+	border: 2px solid #333;
+	padding: 5px 10px;
+	text-align: center;
+	font-size: 16px;
+	float: left;
+	margin-right: 25px;
+        margin-bottom: 5px;
+        user-select: none;
+}
+.inactive_button {
+	background-color: #999;
+	cursor: default;
+}
+.hidden_button {
+	display:none;
+}
+.active_button:hover {
+	background-color: #bbb;
+	cursor: pointer;
+}
+#output {
+	margin-left: -40px;
+	color: #ddd;
+	height: 180px;
+	background-color: #1E1916;
+	white-space: pre;
+	overflow: auto;
+	padding: 2px 4px;
+	font-size: 12px;
+	clear: both;
+}
+#input, #input_border {
+	background-color: #eee;
+}
+#input {
+	width: 100%;
+	border: 0px;
+	font-size: 14px;
+	line-height: 16.8px;
+	padding: 3px 0px;
+	margin: 0px;
+}
+#input_border {
+	margin-left: -40px;
+	border: 1px solid #1E1916;
+	padding: 0px 5px;
+}
+#overlay {
+	background-color: #000;
+	opacity: .5;
+	position: absolute;
+	width: 1000%;
+	height: 1000%;
+	top: 0px;
+	left: 0px;
+}
+#memory, #code {
+	position: absolute;
+	background-color: #1E1916;
+	width: 900px;
+	height: 700px;
+	border: 2px solid #aaa;
+	top: 80px;
+	left: 190px;
+	color: #eee;
+}
+#code_view {
+    overflow: auto;
+    padding: 5px;
+    height: 650px;
+    font-family: monospace;
+    white-space: pre-wrap;
+}
+#memory_hide, #code_hide {
+	text-align: center;
+	border-bottom: 2px solid #aaa;
+	cursor: pointer;
+	height: 18px;
+}
+#memory_hide:hover, #memory_sidebar > div:hover, #code_hide:hover {
+	background-color: #555;
+}
+#memory_sidebar {
+	width: 180px;
+	height: 630px;
+	border-right: 2px solid #aaa;
+	overflow: auto;
+}
+#memory_sidebar > div {
+	border-bottom: 2px solid #aaa;
+	padding: 4px;
+	cursor: pointer;
+}
+#memory_type {
+	position: absolute;
+	bottom: 0px;
+	padding: 5px;
+	border-top: 2px solid #aaa;
+	border-right: 2px solid #aaa;
+	width: 170px;
+}
+#memory_view {
+	float: right;
+	width: 670px;
+	padding: 20px;
+	white-space: pre;
+	height: 640px;
+	overflow: auto;
+}
+fieldset {
+	border: 0px none;
+	width: 100%;
+	clear: both;
+	padding: 0px;
+	margin: 0px;
+}
+fieldset > div {
+	background-color: #1E1916;
+	color: #eee;
+}
+legend {
+	background-color: #1E1916;
+	color: #ddd;
+	padding: 7px 15px;
+	border-radius: 15px 15px 0px 0px;
+}
+br {
+	clear: both;
+}
+ul {
+	margin: 0px;
+}
+.email {
+	font-family: monospace;
+	background-color: #fff;
+	color: #000;
+}
+</style>
+<script>
+function b(d){return document.getElementById(d)}function n(d){var f=b("status");for(d=document.createTextNode(d);f.firstChild;)f.removeChild(f.firstChild);f.appendChild(d)}function B(d){d=String(d);for(var f=d.length-3;0<f;f-=3)d=d.substring(0,f)+"."+d.substring(f);return d}var L;
+function M(){function d(){}function f(c){var d=Math.max(0,b("editor").value.split("\n").length);b("rows").scrollTop=b("editor").scrollTop;setTimeout(function(){b("rows").scrollTop=b("editor").scrollTop},300);if(d!==C||c!==N){N=c;b("rows").removeChild(b("rows").firstChild);var a="";for(C=d;0<d;d--)a=d===c?"=>\n"+a:d+".\n"+a;b("rows").appendChild(document.createTextNode(a))}}function e(c){for(var a=b("memory_sidebar"),e=b("memory_view"),f,g={};a.lastChild;)a.removeChild(a.lastChild);if(c){for(;e.firstChild;)e.removeChild(e.firstChild);
+e.appendChild(document.createTextNode(0===q.length?"run the program first":"<- pick one"))}for(c=0;c<q.length;c++)f=document.createElement("div"),-1===q[c].n?f.appendChild(document.createTextNode("final dump")):(g[q[c].n]||(g[q[c].n]=0),f.appendChild(document.createTextNode("dump "+q[c].n+" iteration "+g[q[c].n]++))),f.onclick=function(c,a){return function U(){for(;e.firstChild;)e.removeChild(e.firstChild);var f=document.createElement("b");f.appendChild(document.createTextNode(a.textContent+"\n"));
+-1!==c.n&&f.appendChild(document.createTextNode("line "+c.I+" char "+c.H));f.appendChild(document.createTextNode("\n\n"));e.appendChild(f);e.appendChild(x(c.J,c.p,8===m?12:16===m?8:4,m/8,y));e.scrollTop=0;d=U}}(q[c],f),a.appendChild(f);b("memory").style.display="block";b("overlay").style.display="block";document.body.style.overflow="hidden"}function a(c,a){for(;c.length<a;)c="0"+c;return c}function x(c,d,e,f,g){var I=2,k,h,m=document.createElement("span"),q=document.createElement("b");if(0===c.length)return"";
+h=""+("pointer = "+a(d.toString(10),4).toUpperCase()+"\n\n");g?(k=10,f=2*f+(2<f?2:1),I=2*I+(2<I?2:1)):(k=16,f*=2,I*=2);for(var p=0,l,r;p<c.length;p+=e){h+=a(p.toString(k).toUpperCase(),I)+":";g="";for(l=0;l<e&&p+l<c.length;l++)r=c[p+l]||0,h+="  ",p+l===d?(m.appendChild(document.createTextNode(h)),h="",q.appendChild(document.createTextNode(a(r.toString(k).toUpperCase(),f))),m.appendChild(q)):h+=a(r.toString(k).toUpperCase(),f),g=33>r||126<r?g+".":g+String.fromCharCode(r);h+="  ";if(l<e)for(l=(2+f)*
+(e-l);0<l;l--)h+=" ";h+=g+"\n"}m.appendChild(document.createTextNode(h));return m}function D(c){return c.replace(/\\(?:x[0-9a-f]{1,4}|\d{1,3}|[nrt\\])/gi,function(c){switch(c[1].toLowerCase()){case "n":return"\n";case "r":return"\r";case "t":return"\t";case "\\":return"\\";case "x":return String.fromCharCode(parseInt(c.substring(2),16)%Math.pow(2,m));default:return String.fromCharCode(parseInt(c.substring(1),10)%Math.pow(2,m))}})}function E(){var c=URL.createObjectURL(new Blob(["(",function(){self.addEventListener("message",
+function(c){(new Function("",c.data.D))()},!1)}.toString(),")()"],{type:"application/javascript"}));k=new Worker(c);k.onmessage=function(c){c=c.data;if(c.s){var a=new Date-J;p=!1;b("run_button").className="active_button";b("stop_button").className="inactive_button";if(-1===c.s)F?n("Finished "+B(c.c)+" instructions in "+B(a)+" ms."):n("Finished in "+B(a)+" ms.");else{var d;switch(c.s){case 3:d="Memory border overflow";break;case 4:d="Memory border underflow"}a=O(t,c.k);f(a.a);n("Warning: "+d+" in line "+
+a.a+" char "+a.b+".")}t=""}c.o&&(d=String.fromCharCode.apply(String,c.o),b("output").appendChild(document.createTextNode(d)),-1!==d.indexOf("\n")&&(b("output").scrollTop=b("output").scrollHeight));c.m&&(a=O(t,c.k),q.push({p:c.p,J:c.m,n:c.n,H:a.b,I:a.a}),"block"===b("memory").style.display&&e(!1))}}function G(c,a){/^\w+:/.test(c)||(c="http://"+c);P(c,function(c){b("editor").value=c;b("editor").scrollTop=0;f(!1);p&&(p=!1,k.terminate(),E());z()},function(){!a&&alert("Could not load file: "+c)})}function z(){if(!p){q=
+[];J=+new Date;t=b("editor").value;for(var c=b("editor").value.split(""),a=D(b("input").value);b("output").firstChild;)b("output").removeChild(b("output").firstChild);c=Q(c,a,{v:m,f:F,j:r,l:w,A:D(u),B:K,C:!1,F:!1,i:g,G:h,u:H,g:A});c.error?(n(c.error.message),f(c.error.w.a)):(k.postMessage(c.ok),p=!0,b("run_button").className="inactive_button",b("stop_button").className="active_button",n("Running ..."))}}var m=8,A=3E4,g=!1,h=!0,H=!0,K=!0,u="\n",F=!1,C=0,N,k,p=!1,r=!1,w="#",J,t,y=!0,q=[];if(!L){L=!0;
+E();b("left").style.display=b("options").style.display="block";R(b("run_button"),"click",function(){z()});R(b("load_server_button"),"click",function(){var c=prompt("Enter a URL\nNote: Only servers with CORS (Cross-Origin Resource Sharing)\nDropbox, for example, works");c&&(window.history.replaceState(null,"","?file="+encodeURIComponent(c).replace(/%2F/g,"/").replace(/%3A/g,":")),G(c,!1))});R(b("link_code_button"),"click",function(){var c;c=btoa(b("editor").value).replace(/\+/g,
+"-").replace(/\//g,"_").replace(/=/g,"$");window.history.replaceState(null,"","?c="+c)});R([b("run_button"),b("stop_button"),b("load_server_button"),b("link_code_button"),b("memory_button")],"mousedown",function(c){c.preventDefault&&c.preventDefault()});R(b("input"),"keypress",function(c){c=c.which||c.keyCode;13!==c&&10!==c||p||z()});R(b("load_example"),"change",function(){var c=b("load_example").options[b("load_example").selectedIndex].getAttribute("file");c&&(b("input").value||(b("input").value=
+"example 123"),c=location.protocol+"//"+location.host+"/brainfuck/prog/"+c,window.history.replaceState(null,"","?file="+encodeURIComponent(c).replace(/%2F/g,"/").replace(/%3A/g,":")),G(c,!1))});f(!1);b("editor").M="off";R(b("editor"),"input",f);R(b("editor"),"propertychange",f);R(b("editor"),"scroll",function(){b("rows").scrollTop=b("editor").scrollTop;setTimeout(function(){b("rows").scrollTop=b("editor").scrollTop},300)});R(b("editor"),"mousewheel",function(){b("rows").scrollTop=b("editor").scrollTop;
+setTimeout(function(){b("rows").scrollTop=b("editor").scrollTop},300)});R(b("editor"),"keypress",function(c){var a=c.which||c.keyCode;!c.ctrlKey||c.altKey||c.shiftKey||10!==a&&13!==a||z()});R(b("stop_button"),"click",function(){p&&(p=!1,k&&(k.terminate(),E()),b("run_button").className="active_button",b("stop_button").className="inactive_button",n("Halted."))});R(b("cell_size_8"),"change",function(){b("cell_size_8").checked&&(m=8)});R(b("cell_size_16"),"change",function(){b("cell_size_16").checked&&
+(m=16)});R(b("cell_size_32"),"change",function(){b("cell_size_32").checked&&(m=32)});R(b("dynamic_memory"),"change",function(){g=b("memory_size").disabled=b("memory_overflow_wrap").disabled=b("memory_overflow_abort").disabled=b("dynamic_memory").checked});R(b("memory_size"),"change",function(){A=b("memory_size").value=b("memory_size").h=parseInt(b("memory_size").value,10)||b("memory_size").h||3E4});R([b("memory_overflow_wrap"),b("memory_overflow_abort"),b("memory_overflow_undef")],"change",function(){H=
+b("memory_overflow_wrap").checked;h=b("memory_overflow_undef").checked});R([b("eof_nochange"),b("eof_char")],"change",function(){K=b("eof_char_value").disabled=b("eof_nochange").checked});R(b("eof_char_value"),"change",function(){u=b("eof_char_value").value=b("eof_char_value").h=b("eof_char_value").value||b("eof_char_value").h||"\n"});R(b("dump_memory"),"change",function(){r=!(b("dump_memory_char").disabled=!this.checked)});R(b("dump_memory_char"),"change",function(){w=b("dump_memory_char").h=b("dump_memory_char").value.substr(0,
+1)||b("dump_memory_char").h||"#"});R(b("count_instructions"),"change",function(){F=b("count_instructions").checked});for(var l=0,v=document.getElementsByTagName("input");l<v.length;l++)if(document.createEvent){var S=document.createEvent("Events");S.initEvent("change",!1,!1);v[l].dispatchEvent(S)}else v[l].fireEvent("onchange");R([b("hex"),b("dec")],"change",function(){y=b("dec").checked;d()});R(b("memory_button"),"click",function(){e(!0)});R(b("code_button"),"click",function(){var c=D(b("input").value),
+c=Q(b("editor").value.split(""),c,{v:m,f:F,j:r,l:w,A:D(u),B:K,C:!1,F:!1,i:g,G:h,u:H,g:A});c.ok?(b("code").style.display="block",b("overlay").style.display="block",document.body.style.overflow="hidden",b("code_view").textContent=c.ok.D):(n(c.error.message),f(c.error.w.a))});R(b("minify_button"),"click",function(){function c(a,c,d){for(var e=0,f=0;f<d.length;f++)if(d[f]===a)e++;else if(d[f]===c)e--;else throw"Invalid match: "+d[f];return 0<=e?Array(e+1).join(a):Array(-e+1).join(c)}for(var a=b("editor").value.replace(/[^\[\]\.,\+\-<>]/g,
+""),a=a.replace(/^\[[^\[\]]*\]/g,""),a=a.replace(/(\[[\-\+]])\[[^\[\]]*\]/g,"$1"),a=a.replace(/[\+\-]*(?:\+-|-\+)[\+\-]*/g,c.bind(this,"+","-")),a=a.replace(/[<>]*(?:<>|><)[<>]*/g,c.bind(this,"<",">")),d="",e=0;e<a.length;)d+=a.slice(e,e+80)+"\n",e+=80;b("code").style.display="block";b("overlay").style.display="block";document.body.style.overflow="hidden";b("code_view").textContent=d});R([b("overlay"),b("memory_hide"),b("code_hide")],"click",function(){b("memory").style.display="none";b("overlay").style.display=
+"none";b("code").style.display="none";document.body.style.overflow="auto"});l=T();if(l.c){v="";try{v=atob(l.c.replace(/-/g,"+").replace(/_/g,"/").replace(/\$/g,"="))}catch(c){}v&&(b("editor").value=v,f(!1))}else l.file&&G(decodeURIComponent(l.file),!0)}}function V(d,f){return 0===f?d:V(f,d%f)}function W(d,f){for(var e=1,a=0,x;1!=f;)x=e,e=a,a=x-a*(d/f|0),x=d,d=f,f=x%f;return a}function X(d,f,e){for(e=e||0;e<d.length;e++)if(d[e]===f)return e;return-1}
+function P(d,f,e){var a=new XMLHttpRequest;a.onreadystatechange=function(){4===a.readyState&&(200===a.status?f(a.responseText,d):e&&e(a.responseText,a.status))};a.open("get",d,!0);a.send("")}function T(){for(var d=location.search.substr(1).split("&"),f,e={},a=0;a<d.length;a++)f=d[a].split("="),e[f[0]]=f[1];return e}
+var R=window.addEventListener?function(d,f,e){if(d instanceof Array)for(var a=0;a<d.length;a++)d[a].addEventListener(f,e,!1);else d.addEventListener(f,e,!1)}:function(d,f,e){if(d instanceof Array)for(var a=0;a<d.length;a++)d[a].attachEvent("on"+f,e);else d.attachEvent("on"+f,e)};(L="undefined"===typeof document.readyState?!!document.getElementsByTagName("body")[0]:"loaded"===document.readyState||"complete"===document.readyState)?(L=!1,M()):(R(document,"DOMContentLoaded",M),R(window,"load",M));
+function Q(d,f,e){function a(){return x(m[m.length-1])}function x(a){a="p"+(0<a?"+"+a:0===a?"":a);return e.u?"u("+a+")":a}function D(a){return 0<a?"p+="+a+";":0===a?"":"p-="+-a+";"}function E(){A&&(A=!1,e.i?g+="for(;"+a()+"<0;p++)m.unshift(0);for(;"+a()+">=m.length;)m.push(0);":e.u||e.G||(g+="if("+a()+">="+e.g+")return self.postMessage({s:3,o:o,m:m,p:"+a()+",n:-1,k:"+p+"});",g+="if("+a()+"<0)return self.postMessage({s:4,o:o,m:m,p:"+a()+",n:-1,k:"+p+"});"))}var G=d.length,z=0,m=[0],A=!1,g="",h="",
+H,h=[0],K="<>+-,.[]"+(e.j?e.l:""),u=Math.pow(2,e.v)-1,F=0,C=!e.i&&"ArrayBuffer"in window,N=e.A.charCodeAt(0),k=0;for(;k<G;k++){var p=k;switch(d[k]){case "+":case "-":for(var r=1;k<G;k++)if(d[k+1]===d[p])r++;else if(-1!==K.indexOf(d[k+1]))break;e.f&&(h[h.length-1]+=r);case "[":case "]":case ".":case ",":E()}if("+"===d[p])g=C?1===r?g+("m["+a()+"]++;"):g+("m["+a()+"]+="+r+";"):1===r?g+("m["+a()+"]==="+u+"?(m["+a()+"]=0):m["+a()+"]++;"):g+("m["+a()+"]=m["+a()+"]>"+(u-r)+"?(m["+a()+"]+"+r+")%"+(u+1)+":m["+
+a()+"]+"+r+";");else if("-"===d[p])g=C?1===r?g+("m["+a()+"]--;"):g+("m["+a()+"]-="+r+";"):1===r?g+("m["+a()+"]===0?(m["+a()+"]="+u+"):m["+a()+"]--;"):g+("m["+a()+"]=m["+a()+"]<"+r+"?"+(u-r+1)+"+m["+a()+"]:m["+a()+"]-"+r+";");else if(">"===d[p])m[m.length-1]++,h[h.length-1]++,A=!0;else if("<"===d[p])m[m.length-1]--,h[h.length-1]++,A=!0;else if("["===d[p]){var w=X(d,"]",k),J=!1;if(-1!==w&&w<(X(d,"[",k+1)+1||1E9)&&w<(X(d,".",k)+1||1E9)&&w<(X(d,",",k)+1||1E9)&&(!e.j||w<(X(d,e.l,k)+1||1E9))&&!e.i){for(var t=
+{0:u+1},y=1,q=0,l=1;l<w-k;l++){var v=d[k+l];"+"===v?(t[q]++,y++):"-"===v?(t[q]--,y++):"<"===v?(q--,y++,t[q]||(t[q]=0)):">"===v&&(q++,y++,t[q]||(t[q]=0))}if(!q&&1===V(t[0],u+1)){g+="if((_=m["+a()+"])!==0){";J=!0;k=-W(t[0],u+1)+u+1;for(l in t)(l=Number(l))&&0!==t[l]&&(q=t[l]*k%(u+1),g+="m["+x(m[m.length-1]+l)+"]+=_"+(1===q?"":"*"+q),C||(g+="%"+(u+1)),g+=";");e.f&&(g+="c+=m["+a()+"]*"+y+";");g+="m["+a()+"]=0;";k=w;g+="}";e.f&&(g+="c++;")}}J||(g+="while(m["+a()+"]!==0){",h[h.length-1]++,h.push(0),m.push(m[m.length-
+1]),z++,H=k+1)}else if("]"===d[p]){if(e.f&&(g+="c+="+(h.pop()+1)+";"),g+=D(m.pop()-m[m.length-1]),g+="}",!z--)return f=O(d,k),{error:{w:f,message:"Syntax error: Unexpected closing bracket in line "+f.a+" char "+f.b+"."}}}else","===d[p]?(e.B?g+="i.length&&(m["+a()+"]=i.pop());":g+="m["+a()+"]=i.length?i.pop():"+N+";",h[h.length-1]++):"."===d[p]?(g+="q(m["+a()+"]);",h[h.length-1]++):e.j&&d[k]===e.l&&(g+="self.postMessage({m:m,p:"+a()+",k:"+p+",n:"+F++ +"});")}E();for(k=0;h.length;)k+=h.pop();e.f&&(g+=
+"c+="+k+";");g+="return self.postMessage({s:-1,o:o,c:c,m:m,p:"+a()+",n:-1});";if(0<z)return f=O(d,H),{error:{w:f,message:"Syntax error: Unclosed bracket in line "+f.a+" char "+f.b+"."}};d=[];for(k=f.length-1;0<=k;k--)d.push(f.charCodeAt(k));h="'use strict';var _,o=[],c=0,p=0,j=0,"+("i="+JSON.stringify(d)+",");C?h+="m=new Uint"+e.v+"Array("+e.g+");":(h+="m=[0];",e.i||(h+="for(j="+e.g+";j>0;j--)m.push(0);"));h=e.C?h+"function q(i){o.push(i)};":e.F?h+("o.push(m["+a()+"]);if(m["+a()+"]===10)self.postMessage({o:o}),o=[];"):
+h+"function q(i){self.postMessage({o:[i]})}";e.u&&(h+="function u(n){n=n%"+e.g+";return n<0?n+"+e.g+":n};");return{ok:{D:h+g,L:"",K:[]}}}function O(d,f){for(var e={a:1,b:0},a=0;a<f;a++)"\n"===d[a]?(e.a++,e.b=0):e.b++;return e};
+</script></head>
+<body>
+	<div id="right">
+		<fieldset>
+			<legend>About</legend>
+			<div>
+				A Brainfuck editor &amp; optimizing interpreter, written in JavaScript.
+				The code is converted to JavaScript code and then run in a web worker, which speeds up execution
+                                at lot (try <a href="https://copy.sh/brainfuck/?file=https://copy.sh/brainfuck/prog/mandelbrot.b">this</a> for example).
+				<br>
+                                <br>
+                                <select id="load_example">
+                                    <option>Load example program</option>
+<option file="hanoi.bf">hanoi.bf</option>
+<option file="yapi.b">yapi.b</option>
+<option file="hellom.bf">hellom.bf</option>
+<option file="numwarp.b">numwarp.b</option>
+<option file="beer.b">beer.b</option>
+<option file="quine505.b">quine505.b</option>
+<option file="char.bf">char.bf</option>
+<option file="PI16.BF">PI16.BF</option>
+<option file="dbf2c.b">dbf2c.b</option>
+<option file="mandelbrot.b">mandelbrot.b</option>
+<option file="dquine.b">dquine.b</option>
+<option file="oobrain.b">oobrain.b</option>
+<option file="bockbeer.b">bockbeer.b</option>
+<option file="rot13.b">rot13.b</option>
+<option file="wc.b">wc.b</option>
+<option file="random.b">random.b</option>
+<option file="triangle.bf">triangle.bf</option>
+<option file="squares.b">squares.b</option>
+                                </select>
+                                <br>
+				<br>
+				Have fun! :-)<br>
+				<hr>
+				You can add special chars to the input field:<br>
+				Decimal: <strong>\65</strong> (same as "A")<br>
+				Hexadecimal: <strong>\x7E</strong> (same as "~")<br>
+				Control characters: <strong>\r \n \t</strong>
+				<br><br>
+				For any kind of feedback, toss me a mail to
+				<div class="email">--[-----&gt;+&lt;]&gt;---.++++++++++++.+.+++++++++.+[--&gt;+&lt;]&gt;+++.++[--&gt;+++&lt;]&gt;.++++++++++++.+.+++++++++.-[--&gt;+++++&lt;]&gt;++.[---&gt;++&lt;]&gt;-.-----------.</div>
+				<br>
+				Links:
+				<ul>
+					<li><a href="http://en.wikipedia.org/wiki/Brainfuck">Wikipedia on Brainfuck</a></li>
+					<li><a href="http://esoteric.sange.fi/brainfuck/bf-source/prog/">The Brainfuck archive</a></li>
+					<li><a href="http://esolangs.org/wiki/Brainfuck_algorithms">Brainfuck snippets</a></li>
+					<li><a href="https://copy.sh/brainfuck/text.html">Text generator</a></li>
+					<li><a href="https://copy.sh/brainfuck/compress.html">BF code compressor</a></li>
+				</ul>
+				<br>
+			</div>
+		</fieldset>
+		<fieldset id="options" style="margin-bottom: 0px; display: block;">
+			<legend>Options</legend>
+			<div>
+				Cell size (Bits):
+				<input type="radio" name="cell_size" id="cell_size_8" checked="checked"><label for="cell_size_8"> 8 </label>
+				<input type="radio" name="cell_size" id="cell_size_16"><label for="cell_size_16"> 16 </label>
+				<input type="radio" name="cell_size" id="cell_size_32"><label for="cell_size_32"> 32 </label><br>
+
+				<hr>
+				<label for="dynamic_memory">Dynamic (infinite) Memory: </label><input type="checkbox" id="dynamic_memory"><br>
+				<label title="Number of cells" for="memory_size">Memory size:</label> <input type="text" value="30000" id="memory_size"><br>
+
+				Memory overflow behaviour:<br>
+				<input type="radio" name="memory_overflow" id="memory_overflow_undef" checked="checked"> <label for="memory_overflow_undef"> undefined (fast) </label>
+				<input type="radio" name="memory_overflow" id="memory_overflow_wrap"><label title="&lt; on first cell goes to last cell and vice versa" for="memory_overflow_wrap"> wrap </label>
+				<input type="radio" name="memory_overflow" id="memory_overflow_abort"><label for="memory_overflow_abort"> abort </label><br>
+				<hr>
+
+				End of input:
+				<input type="radio" name="eof" id="eof_nochange" checked="checked"><label for="eof_nochange"> no change </label>
+				<input type="radio" name="eof" id="eof_char"><label for="eof_char"> char: </label>
+				<input type="text" id="eof_char_value" value="\n" disabled=""><br>
+
+				<input type="checkbox" id="dump_memory"><label for="dump_memory"> Dump Memory at char: </label>
+				<input type="text" id="dump_memory_char" value="#" disabled=""><br>
+
+				<input type="checkbox" id="count_instructions"><label for="count_instructions"> Count instructions </label><br>
+				<br>
+			</div>
+		</fieldset>
+	</div>
+	<div id="left" style="display: block;">
+		<div id="rows">1.
+</div>
+		<textarea id="editor"></textarea>
+		<br>
+		<div id="status_bar">
+			<div id="run_button" title="ctrl+enter" class="active_button">run</div>
+			<div id="stop_button" class="hidden_button inactive_button">stop</div>
+			<div id="load_server_button" class="hidden_button active_button">load from server</div>
+			<div id="link_code_button" class="hidden_button active_button">link to this code</div>
+                        <!--<div id="load_file_button" class="hidden_button active_button">load file</div>
+                        <div id="save_file_button" class="hidden_button active_button">save file</div>-->
+			<div id="memory_button" class="hidden_button active_button">view memory</div>
+			<div id="code_button" class="hidden_button active_button">view generated code</div>
+			<div id="minify_button" class="hidden_button active_button">minify</div>
+			<div id="status">Ready.</div>
+		</div>
+		<div id="output"></div>
+		<div id="input_border">
+			<input type="text" id="input" placeholder="input">
+		</div>
+	</div>
+	<div id="overlay" style="display: none"></div>
+	<div id="memory" style="display: none">
+		<div id="memory_hide">hide</div>
+		<div id="memory_view"></div>
+		<div id="memory_sidebar"></div>
+		<div id="memory_type">
+			<input type="radio" name="memory_type" id="dec" checked="checked"><label for="dec"> decimal </label><br>
+			<input type="radio" name="memory_type" id="hex"><label for="hex"> hexadecimal </label>
+		</div>
+	</div>
+	<div id="code" style="display: none">
+		<div id="code_hide">hide</div>
+		<div id="code_view"></div>
+	</div>
+	
+
+
+</body></html>
