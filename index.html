@@ -121,6 +121,9 @@ input[disabled]
 	background-color: #999;
 	cursor: default;
 }
+.hidden_button {
+	display:none;
+}
 .active_button:hover {
 	background-color: #bbb;
 	cursor: pointer;
@@ -365,14 +368,14 @@ h+"function q(i){self.postMessage({o:[i]})}";e.u&&(h+="function u(n){n=n%"+e.g+"
 		<br>
 		<div id="status_bar">
 			<div id="run_button" title="ctrl+enter" class="active_button">run</div>
-			<div id="stop_button" class="inactive_button">stop</div>
-			<div id="load_server_button" class="active_button">load from server</div>
-			<div id="link_code_button" class="active_button">link to this code</div>
-                        <!--<div id="load_file_button" class="active_button">load file</div>
-                        <div id="save_file_button" class="active_button">save file</div>-->
-			<div id="memory_button" class="active_button">view memory</div>
-			<div id="code_button" class="active_button">view generated code</div>
-			<div id="minify_button" class="active_button">minify</div>
+			<div id="stop_button" class="hidden_button inactive_button">stop</div>
+			<div id="load_server_button" class="hidden_button active_button">load from server</div>
+			<div id="link_code_button" class="hidden_button active_button">link to this code</div>
+                        <!--<div id="load_file_button" class="hidden_button active_button">load file</div>
+                        <div id="save_file_button" class="hidden_button active_button">save file</div>-->
+			<div id="memory_button" class="hidden_button active_button">view memory</div>
+			<div id="code_button" class="hidden_button active_button">view generated code</div>
+			<div id="minify_button" class="hidden_button active_button">minify</div>
 			<div id="status">Ready.</div>
 		</div>
 		<div id="output"></div>
